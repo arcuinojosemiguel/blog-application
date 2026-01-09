@@ -1,4 +1,5 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { createBlog } from "../store/blogSlice";
@@ -48,7 +49,7 @@ export default function CreateBlog() {
         createBlog({ title: title.trim(), content: content.trim() })
       ).unwrap();
       navigate("/blogs");
-    } catch (err) {
+    } catch {
       // Error handled by Redux
     }
   };
@@ -75,12 +76,17 @@ export default function CreateBlog() {
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Title Field */}
             <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Blog Title
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label
+                  htmlFor="title"
+                  className="text-sm sm:text-base font-bold text-gray-900"
+                >
+                  Blog Title
+                </label>
+                <span className="text-xs sm:text-sm text-gray-500 mr-2">
+                  {title.length} characters
+                </span>
+              </div>
               <input
                 id="title"
                 type="text"
@@ -90,96 +96,78 @@ export default function CreateBlog() {
                 placeholder="Enter an engaging title..."
                 disabled={loading}
               />
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                {title.length} characters
-              </p>
             </div>
 
             {/* Content Field */}
             <div>
-              <label
-                htmlFor="content"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Blog Content
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label
+                  htmlFor="content"
+                  className="text-sm sm:text-base font-bold text-gray-900"
+                >
+                  Blog Content
+                </label>
+                <span className="text-xs sm:text-sm text-gray-500 mr-2">
+                  {content.length} characters
+                </span>
+              </div>
               <textarea
                 id="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={12}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none resize-none text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none resize-y text-base sm:text-lg"
                 placeholder="Write your blog content here..."
                 disabled={loading}
               />
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                {content.length} characters
-              </p>
             </div>
 
             {/* Error Messages */}
-            {(validationError || error) && (
+            {validationError && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                {validationError || error}
+                {validationError}
+              </div>
+            )}
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
               </div>
             )}
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 sm:flex-none px-6 sm:px-8 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200 font-medium text-sm sm:text-base"
+              >
+                {loading ? "Creating..." : "Create Blog"}
+              </button>
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={loading}
-                className="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="flex-1 sm:flex-none px-6 sm:px-8 py-2 sm:py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed transition duration-200 font-medium text-sm sm:text-base"
               >
                 Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 text-sm sm:text-base"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center">
-                    <svg
-                      className="animate-spin h-5 w-5 mr-2"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        fill="none"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    Publishing...
-                  </span>
-                ) : (
-                  "Publish Blog"
-                )}
               </button>
             </div>
           </form>
         </div>
 
-        {/* Tips Card */}
-        <div className="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-blue-900 mb-2">
-            Writing Tips
+        {/* Tips Section */}
+        <div className="mt-6 sm:mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
+          <h3 className="font-semibold text-blue-900 mb-2 text-sm sm:text-base">
+            Writing Tips:
           </h3>
-          <ul className="space-y-1 text-xs sm:text-sm text-blue-800">
-            <li>• Keep your title clear and descriptive</li>
-            <li>• Break content into paragraphs for better readability</li>
-            <li>• Proofread before publishing</li>
-            <li>• Use engaging language to connect with readers</li>
+          <ul className="list-disc list-inside space-y-1 text-blue-800 text-xs sm:text-sm">
+            <li>Make your title clear and compelling</li>
+            <li>Use paragraphs to organize your thoughts</li>
+            <li>Proofread before publishing</li>
+            <li>
+              Minimum requirements: 3 characters for title, 10 for content
+            </li>
           </ul>
         </div>
       </div>

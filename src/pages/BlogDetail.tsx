@@ -42,7 +42,7 @@ export default function BlogDetail() {
     try {
       await dispatch(deleteBlog(id)).unwrap();
       navigate("/blogs");
-    } catch (err) {
+    } catch {
       setIsDeleting(false);
       alert("Failed to delete blog. Please try again.");
     }
@@ -125,8 +125,8 @@ export default function BlogDetail() {
         {/* Blog Content Card */}
         <article className="bg-white rounded-xl shadow-lg overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-3">
+          <div className="bg-linear-to-r from-blue-600 to-purple-600 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-3 text-left">
               {currentBlog.title}
             </h1>
             <div className="flex flex-col sm:flex-row sm:items-center text-blue-100 gap-2 sm:gap-0">
@@ -176,7 +176,7 @@ export default function BlogDetail() {
           {/* Content */}
           <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             <div className="prose max-w-none">
-              <p className="text-gray-700 text-base sm:text-lg leading-relaxed whitespace-pre-wrap">
+              <p className="text-gray-700 text-base sm:text-lg leading-relaxed whitespace-pre-wrap text-left">
                 {currentBlog.content}
               </p>
             </div>

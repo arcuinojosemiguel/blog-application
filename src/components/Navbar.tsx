@@ -26,7 +26,7 @@ export default function Navbar() {
           {/* Logo/Brand */}
           <div className="flex items-center">
             <Link to="/blogs" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-linear-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">B</span>
               </div>
               <span className="text-lg sm:text-xl font-bold text-gray-900">
@@ -56,7 +56,7 @@ export default function Navbar() {
                 <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
                   <div className="text-sm hidden lg:block">
                     <p className="text-gray-500 text-xs">Logged in as</p>
-                    <p className="text-gray-900 font-medium truncate max-w-[150px]">
+                    <p className="text-gray-900 font-medium truncate max-w-37.5">
                       {user.email}
                     </p>
                   </div>

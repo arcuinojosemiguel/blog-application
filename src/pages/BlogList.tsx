@@ -67,7 +67,7 @@ export default function BlogList() {
           </div>
           <Link
             to="/blogs/create"
-            className="w-full sm:w-auto text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-200 transform hover:scale-105 text-sm sm:text-base"
+            className="w-full sm:w-auto text-center bg-linear-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-200 transform hover:scale-105 text-sm sm:text-base"
           >
             + Create New Blog
           </Link>
@@ -121,10 +121,10 @@ export default function BlogList() {
                   className="bg-white rounded-lg shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
                 >
                   <div className="p-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                    <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 text-left">
                       {blog.title}
                     </h2>
-                    <p className="text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-gray-600 mb-4 line-clamp-3 text-left">
                       {blog.content}
                     </p>
                     <div className="flex items-center justify-between">

@@ -1,4 +1,5 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
+import type { FormEvent } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -12,6 +13,8 @@ export default function EditBlog() {
   const { id } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [originalTitle, setOriginalTitle] = useState("");
+  const [originalContent, setOriginalContent] = useState("");
   const [validationError, setValidationError] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -27,6 +30,7 @@ export default function EditBlog() {
 
     return () => {
       dispatch(clearCurrentBlog());
+      setIsLoaded(false);
     };
   }, [id, dispatch]);
 
@@ -39,11 +43,19 @@ export default function EditBlog() {
         return;
       }
 
-      setTitle(currentBlog.title);
-      setContent(currentBlog.content);
-      setIsLoaded(true);
+      // Use a microtask to batch state updates
+      Promise.resolve().then(() => {
+        setTitle(currentBlog.title);
+        setContent(currentBlog.content);
+        setOriginalTitle(currentBlog.title);
+        setOriginalContent(currentBlog.content);
+        setIsLoaded(true);
+      });
     }
-  }, [currentBlog, isLoaded, navigate, user]);
+  }, [currentBlog, navigate, user, isLoaded]);
+
+  // Check if there are any changes
+  const hasChanges = title !== originalTitle || content !== originalContent;
 
   const validateForm = (): boolean => {
     if (!title.trim()) {
@@ -80,7 +92,7 @@ export default function EditBlog() {
         updateBlog({ id, title: title.trim(), content: content.trim() })
       ).unwrap();
       navigate(`/blogs/${id}`);
-    } catch (err) {
+    } catch {
       // Error handled by Redux
     }
   };
@@ -134,58 +146,66 @@ export default function EditBlog() {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Blog Post</h1>
-          <p className="text-gray-600 mt-2">Update your blog content</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            Edit Blog Post
+          </h1>
+          <p className="text-gray-600 mt-2 text-sm sm:text-base">
+            Update your blog content
+          </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Title Field */}
             <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Blog Title
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label
+                  htmlFor="title"
+                  className="text-sm sm:text-base font-bold text-gray-900"
+                >
+                  Blog Title
+                </label>
+                <span className="text-xs sm:text-sm text-gray-500 mr-2">
+                  {title.length} characters
+                </span>
+              </div>
               <input
                 id="title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none text-lg"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none text-base sm:text-lg"
                 placeholder="Enter an engaging title..."
                 disabled={loading}
               />
-              <p className="text-sm text-gray-500 mt-1">
-                {title.length} characters
-              </p>
             </div>
 
             {/* Content Field */}
             <div>
-              <label
-                htmlFor="content"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Blog Content
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label
+                  htmlFor="content"
+                  className="text-sm sm:text-base font-bold text-gray-900"
+                >
+                  Blog Content
+                </label>
+                <span className="text-xs sm:text-sm text-gray-500 mr-2">
+                  {content.length} characters
+                </span>
+              </div>
               <textarea
                 id="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={12}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none resize-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none resize-none text-sm sm:text-base"
                 placeholder="Write your blog content here..."
                 disabled={loading}
               />
-              <p className="text-sm text-gray-500 mt-1">
-                {content.length} characters
-              </p>
             </div>
 
             {/* Error Messages */}
@@ -207,8 +227,8 @@ export default function EditBlog() {
               </button>
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 text-sm sm:text-base"
+                disabled={loading || !hasChanges}
+                className="w-full sm:w-auto px-6 py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 text-sm sm:text-base"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
@@ -242,11 +262,11 @@ export default function EditBlog() {
         </div>
 
         {/* Info Card */}
-        <div className="mt-4 sm:mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-yellow-900 mb-2">
+        <div className="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-blue-900 mb-2">
             Note
           </h3>
-          <p className="text-xs sm:text-sm text-yellow-800">
+          <p className="text-xs sm:text-sm text-blue-800">
             Changes will be saved with the current timestamp. Readers will see
             when the blog was last updated.
           </p>

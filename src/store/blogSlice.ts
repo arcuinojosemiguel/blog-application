@@ -25,6 +25,7 @@ export const fetchBlogs = createAsyncThunk(
       const { data, error, count } = await supabase
         .from("blogs")
         .select("*", { count: "exact" })
+        .eq("status", "active")
         .order("created_at", { ascending: false })
         .range(from, to);
 
@@ -62,6 +63,7 @@ export const createBlog = createAsyncThunk(
             title,
             content,
             author_id: user.id,
+            status: "active",
           },
         ])
         .select()
@@ -100,12 +102,15 @@ export const updateBlog = createAsyncThunk(
   }
 );
 
-// Delete blog
+// Delete blog (soft delete - updates status to 'deleted')
 export const deleteBlog = createAsyncThunk(
   "blog/deleteBlog",
   async (id: string, { rejectWithValue }) => {
     try {
-      const { error } = await supabase.from("blogs").delete().eq("id", id);
+      const { error } = await supabase
+        .from("blogs")
+        .update({ status: "deleted", updated_at: new Date().toISOString() })
+        .eq("id", id);
 
       if (error) throw error;
 
@@ -125,6 +130,7 @@ export const fetchBlogById = createAsyncThunk(
         .from("blogs")
         .select("*")
         .eq("id", id)
+        .eq("status", "active")
         .single();
 
       if (error) throw error;

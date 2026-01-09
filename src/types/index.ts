@@ -16,6 +16,7 @@ export interface Blog {
   author_id: string;
   created_at: string;
   updated_at: string;
+  status: "active" | "deleted";
 }
 
 export interface BlogState {
