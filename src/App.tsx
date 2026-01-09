@@ -6,6 +6,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import BlogList from "./pages/BlogList";
 import CreateBlog from "./pages/CreateBlog";
+import BlogDetail from "./pages/BlogDetail";
+import EditBlog from "./pages/EditBlog";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
@@ -39,7 +41,22 @@ function App() {
           </ProtectedRoute>
         }
       />
-      {/* More blog routes will be added later */}
+      <Route
+        path="/blogs/:id"
+        element={
+          <ProtectedRoute>
+            <BlogDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogs/:id/edit"
+        element={
+          <ProtectedRoute>
+            <EditBlog />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

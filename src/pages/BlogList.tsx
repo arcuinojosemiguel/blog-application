@@ -54,18 +54,20 @@ export default function BlogList() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">All Blogs</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              All Blogs
+            </h1>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               {totalCount} blog posts available
             </p>
           </div>
           <Link
             to="/blogs/create"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-200 transform hover:scale-105"
+            className="w-full sm:w-auto text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-200 transform hover:scale-105 text-sm sm:text-base"
           >
             + Create New Blog
           </Link>
@@ -147,26 +149,32 @@ export default function BlogList() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center space-x-2">
+              <div className="flex justify-center items-center flex-wrap gap-2">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 text-sm sm:text-base"
                 >
                   Previous
                 </button>
 
                 {[...Array(totalPages)].map((_, index) => {
                   const page = index + 1;
+                  // On mobile, only show first, last, current, and adjacent pages
+                  const showOnMobile =
+                    page === 1 ||
+                    page === totalPages ||
+                    Math.abs(page - currentPage) <= 1;
+
                   return (
                     <button
                       key={page}
                       onClick={() => handlePageChange(page)}
-                      className={`px-4 py-2 rounded-lg transition duration-200 ${
+                      className={`px-3 sm:px-4 py-2 rounded-lg transition duration-200 text-sm sm:text-base ${
                         currentPage === page
                           ? "bg-blue-600 text-white"
                           : "border border-gray-300 text-gray-700 hover:bg-gray-50"
-                      }`}
+                      } ${!showOnMobile ? "hidden sm:inline-block" : ""}`}
                     >
                       {page}
                     </button>
@@ -176,7 +184,7 @@ export default function BlogList() {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 text-sm sm:text-base"
                 >
                   Next
                 </button>
