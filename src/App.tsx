@@ -5,6 +5,7 @@ import { checkSession } from "./store/authSlice";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import BlogList from "./pages/BlogList";
+import CreateBlog from "./pages/CreateBlog";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
@@ -27,6 +28,14 @@ function App() {
         element={
           <ProtectedRoute>
             <BlogList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogs/create"
+        element={
+          <ProtectedRoute>
+            <CreateBlog />
           </ProtectedRoute>
         }
       />
