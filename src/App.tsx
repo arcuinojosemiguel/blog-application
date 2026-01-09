@@ -4,6 +4,8 @@ import { useAppDispatch } from "./store/hooks";
 import { checkSession } from "./store/authSlice";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import BlogList from "./pages/BlogList";
+import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
 function App() {
@@ -15,10 +17,20 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to="/blogs" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      {/* Blog routes will be added later */}
+
+      {/* Protected Routes */}
+      <Route
+        path="/blogs"
+        element={
+          <ProtectedRoute>
+            <BlogList />
+          </ProtectedRoute>
+        }
+      />
+      {/* More blog routes will be added later */}
     </Routes>
   );
 }
