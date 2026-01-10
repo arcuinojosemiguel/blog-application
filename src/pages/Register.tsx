@@ -1,13 +1,14 @@
-import { useState, FormEvent, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { registerUser, clearError } from '../store/authSlice';
+import { useState, useEffect } from "react";
+import type { FormEvent } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { registerUser, clearError } from "../store/authSlice";
 
 export default function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [validationError, setValidationError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Register() {
 
   useEffect(() => {
     if (user) {
-      navigate('/blogs');
+      navigate("/blogs");
     }
   }, [user, navigate]);
 
@@ -27,26 +28,26 @@ export default function Register() {
 
   const validateForm = (): boolean => {
     if (!email || !password || !confirmPassword) {
-      setValidationError('All fields are required');
+      setValidationError("All fields are required");
       return false;
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setValidationError('Please enter a valid email address');
+      setValidationError("Please enter a valid email address");
       return false;
     }
 
     if (password.length < 6) {
-      setValidationError('Password must be at least 6 characters long');
+      setValidationError("Password must be at least 6 characters long");
       return false;
     }
 
     if (password !== confirmPassword) {
-      setValidationError('Passwords do not match');
+      setValidationError("Passwords do not match");
       return false;
     }
 
-    setValidationError('');
+    setValidationError("");
     return true;
   };
 
@@ -57,18 +58,20 @@ export default function Register() {
 
     try {
       await dispatch(registerUser({ email, password })).unwrap();
-      navigate('/blogs');
-    } catch (err) {
+      navigate("/blogs");
+    } catch {
       // Error handled by Redux
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-2">Create Account</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-2">
+            Create Account
+          </h2>
           <p className="text-gray-600">Join our blogging community today</p>
         </div>
 
@@ -77,7 +80,10 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -93,7 +99,10 @@ export default function Register() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password
               </label>
               <input
@@ -109,7 +118,10 @@ export default function Register() {
 
             {/* Confirm Password Field */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Confirm Password
               </label>
               <input
@@ -134,18 +146,33 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-linear-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
                   </svg>
                   Creating Account...
                 </span>
               ) : (
-                'Create Account'
+                "Create Account"
               )}
             </button>
           </form>
@@ -156,7 +183,9 @@ export default function Register() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Already have an account?</span>
+              <span className="px-2 bg-white text-gray-500">
+                Already have an account?
+              </span>
             </div>
           </div>
 
@@ -171,7 +200,8 @@ export default function Register() {
 
         {/* Footer Text */}
         <p className="text-center text-sm text-gray-600">
-          By creating an account, you agree to our Terms of Service and Privacy Policy
+          By creating an account, you agree to our Terms of Service and Privacy
+          Policy
         </p>
       </div>
     </div>

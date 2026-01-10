@@ -1,4 +1,5 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
+import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { loginUser, clearError } from "../store/authSlice";
@@ -47,13 +48,13 @@ export default function Login() {
     try {
       await dispatch(loginUser({ email, password })).unwrap();
       navigate("/blogs");
-    } catch (err) {
+    } catch {
       // Error handled by Redux
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
@@ -115,7 +116,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
