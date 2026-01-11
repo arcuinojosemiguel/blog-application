@@ -36,8 +36,8 @@ export const fetchBlogs = createAsyncThunk(
         totalCount: count || 0,
         currentPage: page,
       };
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      return rejectWithValue(error instanceof Error ? error.message : 'An error occurred');
     }
   }
 );
@@ -72,8 +72,8 @@ export const createBlog = createAsyncThunk(
       if (error) throw error;
 
       return data as Blog;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      return rejectWithValue(error instanceof Error ? error.message : 'An error occurred');
     }
   }
 );
@@ -96,8 +96,8 @@ export const updateBlog = createAsyncThunk(
       if (error) throw error;
 
       return data as Blog;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      return rejectWithValue(error instanceof Error ? error.message : 'An error occurred');
     }
   }
 );
@@ -115,8 +115,8 @@ export const deleteBlog = createAsyncThunk(
       if (error) throw error;
 
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      return rejectWithValue(error instanceof Error ? error.message : 'An error occurred');
     }
   }
 );
@@ -136,8 +136,8 @@ export const fetchBlogById = createAsyncThunk(
       if (error) throw error;
 
       return data as Blog;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      return rejectWithValue(error instanceof Error ? error.message : 'An error occurred');
     }
   }
 );

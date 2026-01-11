@@ -20,17 +20,43 @@ export const registerUser = createAsyncThunk(
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: undefined,
+        },
       });
 
-      if (error) throw error;
-      if (!data.user) throw new Error("Registration failed");
+      if (error && !error.message.includes("Email not confirmed")) {
+        throw error;
+      }
 
-      return {
-        id: data.user.id,
-        email: data.user.email!,
-      } as User;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+      // If user exists but email not confirmed, try to sign in
+      if (data.user) {
+        // Attempt to sign in immediately (works if email confirmation is disabled)
+        const { data: signInData, error: signInError } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+        if (
+          signInError &&
+          !signInError.message.includes("Email not confirmed")
+        ) {
+          throw signInError;
+        }
+
+        const user = signInData?.user || data.user;
+        return {
+          id: user.id,
+          email: user.email!,
+        } as User;
+      }
+
+      throw new Error("Registration failed");
+    } catch (error: unknown) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     }
   }
 );
@@ -49,14 +75,16 @@ export const loginUser = createAsyncThunk(
       });
 
       if (error) throw error;
-      if (!data.user) throw new Error("Login failed");
+      if (!data?.user) throw new Error("Login failed");
 
       return {
         id: data.user.id,
         email: data.user.email!,
       } as User;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     }
   }
 );
@@ -68,37 +96,40 @@ export const logoutUser = createAsyncThunk(
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     }
   }
 );
 
 // Check current session
-export const checkSession = createAsyncThunk(
-  "auth/checkSession",
-  async (_, { rejectWithValue }) => {
-    try {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
+export const checkSession = createAsyncThunk("auth/checkSession", async () => {
+  try {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
 
-      if (error) throw error;
-
-      if (session?.user) {
-        return {
-          id: session.user.id,
-          email: session.user.email!,
-        } as User;
-      }
-
-      return null;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    // Bypass authentication errors if we have a session
+    if (error && !error.message.includes("not authenticated")) {
+      throw error;
     }
+
+    if (session?.user) {
+      return {
+        id: session.user.id,
+        email: session.user.email!,
+      } as User;
+    }
+
+    return null;
+  } catch {
+    // Silently return null for authentication errors
+    return null;
   }
-);
+});
 
 const authSlice = createSlice({
   name: "auth",
